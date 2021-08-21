@@ -11,15 +11,10 @@ pipeline {
             steps {
                 echo 'Hello World!'
                 sh '''
-                node --version
-                git --version
-                curl --version
+                    node --version
+                    git --version
+                    curl --version
                 '''
-            }
-            post {
-                always {
-                    junit '**/surefire-reports/**/*.xml'
-                }
             }
         }
     }
