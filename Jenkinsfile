@@ -11,10 +11,9 @@ pipeline {
             steps {
                 echo 'Hello World!'
                 sh '''
-                    node --version
                     git --version
-                    curl --version
                 '''
+                echo 'End of stage Test!'
             }
         }
     }
