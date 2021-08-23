@@ -53,14 +53,14 @@ pipeline {
                         pwd
                         ls -l /
                     '''
-                sh 'pytest StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml'
+                // sh 'pytest StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml'
                 echo 'End of stage Test!'
             }
-            post {
-                always {
-                    junit 'test-results/results.xml'
-                }
-            }
+            // post {
+            //     always {
+            //         junit 'test-results/results.xml'
+            //     }
+            // }
         }
     }
 }
