@@ -6,7 +6,7 @@ pipeline {
                 dockerfile {
                     filename 'Dockerfile.dailybuilds'
                     label 'docker'
-                    additionalBuildArgs '--build-arg git_personal_token=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 --build-arg'
+                    additionalBuildArgs '--build-arg git_personal_token=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'
                     customWorkspace './daily-build1'
                 }
             }
@@ -25,7 +25,7 @@ pipeline {
                 dockerfile {
                     filename 'Dockerfile.test'
                     label 'docker'
-                    additionalBuildArgs '--build-arg git_personal_token=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 --build-arg'
+                    additionalBuildArgs '--build-arg git_personal_token=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'
                     customWorkspace './test-build1'
                 }
             }
