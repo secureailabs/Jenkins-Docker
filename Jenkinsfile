@@ -1,55 +1,121 @@
 /* groovylint-disable DuplicateStringLiteral, LineLength, NestedBlockDepth */
 pipeline {
-    agent {
-        dockerfile {
-            filename 'Dockerfile.dailybuilds'
-            label 'docker'
-            additionalBuildArgs '--build-arg git_personal_token=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'
-        }
-    }
+    agent none
     stages {
-        stage('Test') {
+        stage('daily-builds') {
+            agent {
+                dockerfile {
+                    filename 'Dockerfile.dailybuilds'
+                    label 'docker'
+                    additionalBuildArgs '--build-arg git_personal_token=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 --build-arg -t ubuntu-daily'
+                }
+            }
             steps {
                 echo 'Hello World!'
                 sh '''
                     git --version
+                    pwd
+                    ls -l
+                '''
+                echo 'End of stage Test!'
+            }
+        }
+        stage('test') {
+            agent {
+                dockerfile {
+                    filename 'Dockerfile.test'
+                    label 'docker'
+                    additionalBuildArgs '--build-arg git_personal_token=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 --build-arg -t ubuntu-test'
+                }
+            }
+            steps {
+                echo 'Hello World!'
+                sh '''
+                    git --version
+                    pwd
+                    ls -l
                 '''
                 echo 'End of stage Test!'
             }
         }
     }
 }
+
 // pipeline {
-//     agent any
-//     stages {
-//         stage('Build images') {
-//             echo 'Starting to build docker images'
-//             script {
-//                 def custom_1 = dockerfile {
-//                     filename 'Dockerfile.dailybuilds'
-//                     label 'docker'
-//                     additionalBuildArgs '--build-arg git_personal_token=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'
-//                     args '-t ubuntu_dailybuilds'
+//     agent none {
+//         stages {
+//             stage('build') {
+//                 stage('build-nightly') {
+//                     agent {
+//                         dockerfile {
+//                             filename 'Dockerfile.dailybuilds'
+//                             label 'docker'
+//                             additionalBuildArgs '
+//                             --build-arg git_personal_token=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
+//                             --build-arg -t ubuntu-daily
+//                             '
+//                             customWorkspace './daily'
+//                         }
+//                     }
+//                     steps {
+//                         'Hello World from Daily Build'
+//                         sh '''
+//                             git --version
+//                         '''
+//                     }
 //                 }
-//                 custom_1.inside {
-//                     echo 'Hello World from Daily Build'
-//                     sh '''
-//                         git --version
-//                     '''
-//                 }
-//                 def custom_2 = dockerfile {
-//                 filename 'Dockerfile.test'
-//                 label 'docker'
-//                 additionalBuildArgs '--build-arg git_personal_token=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'
-//                 args '-t ubuntu_test'
-//                 }
-//                 custom_2.inside {
-//                     echo 'Hello World from Test(Development)'
-//                     sh '''
-//                         git --version
-//                     '''
+
+//                 stage('build-test') {
+//                     agent {
+//                         dockerfile {
+//                             filename 'Dockerfile.test'
+//                             label 'docker'
+//                             additionalBuildArgs '
+//                             --build-arg git_personal_token=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
+//                             --build-arg -t ubuntu-test
+//                             '
+//                             customWorkspace './test'
+//                         }
+//                     }
+//                     steps {
+//                         'Hello World from test Build'
+//                         sh '''
+//                             git --version
+//                         '''
+//                     }
 //                 }
 //             }
 //         }
+            // stage('tests') {
+            //     parallel {
+            //         stage('test-php5.4') {
+            //             agent {
+            //                 dockerfile {
+            //                     dir '/var/lib/jenkins/Docker'
+            //                     filename 'Dockerfile-php5.4'
+            //                     customWorkspace './build-php5.4'
+            //                 }
+            //             }
+            //             steps {
+            //                 sh 'php --version'
+            //                 sh 'php vendor/phpunit/phpunit/phpunit tests'
+            //             }
+            //         }
+
+            //         stage('test-php7.0') {
+            //             agent {
+            //                 dockerfile {
+            //                     dir '/var/lib/jenkins/Docker'
+            //                     filename 'Dockerfile-php7.0'
+            //                     customWorkspace './build-php7.0'
+            //                 }
+            //             }
+            //             steps {
+            //                 sh 'php --version'
+            //                 sh 'php vendor/phpunit/phpunit/phpunit tests'
+            //             }
+            //         }
+            //     }
+            // }
 //     }
 // }
