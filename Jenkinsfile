@@ -1,7 +1,7 @@
 pipeline {
     agent none
     stages {
-        stage('daily-builds') {
+        stage('builds-daily') {
             agent {
                 dockerfile {
                     filename 'Dockerfile.dailybuilds'
@@ -19,7 +19,7 @@ pipeline {
                 echo 'End of stage daily build!'
             }
         }
-        stage('development') {
+        stage('builds-development') {
             agent {
                 dockerfile {
                     filename 'Dockerfile.development'
@@ -38,7 +38,7 @@ pipeline {
             }
         }
 
-        stage('test-builds') {
+        stage('builds-test') {
             agent {
                 dockerfile {
                     filename 'Dockerfile.test'
