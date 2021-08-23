@@ -3,9 +3,7 @@ LABEL authors="stanley@secureailabs.com"
 USER root
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-
+RUN apt-get update && apt-get install -y git
 
 # GIT
 ARG git_personal_token

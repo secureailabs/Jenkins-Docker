@@ -3,10 +3,7 @@ LABEL authors="stanley@secureailabs.com"
 USER root
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    
-
+RUN apt-get update && apt-get install -y git
 # GIT
 ARG git_personal_token
 RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf " https://github.com/"
