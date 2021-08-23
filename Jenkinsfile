@@ -8,24 +8,26 @@ pipeline {
                     filename 'Dockerfile.dailybuilds'
                     label 'docker'
                     additionalBuildArgs '--build-arg git_personal_token=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 --build-arg -t ubuntu-daily'
+                    customWorkspace './daily-build1'
                 }
             }
             steps {
-                echo 'Hello World!'
+                echo 'Hello World from daily build!'
                 sh '''
                     git --version
                     pwd
-                    ls -l
+                    ls -l /
                 '''
-                echo 'End of stage Test!'
+                echo 'End of stage daily build!'
             }
         }
-        stage('test') {
+        stage('test-builds') {
             agent {
                 dockerfile {
                     filename 'Dockerfile.test'
                     label 'docker'
                     additionalBuildArgs '--build-arg git_personal_token=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 --build-arg -t ubuntu-test'
+                    customWorkspace './test-build1'
                 }
             }
             steps {
@@ -33,7 +35,7 @@ pipeline {
                 sh '''
                     git --version
                     pwd
-                    ls -l
+                    ls -l /
                 '''
                 echo 'End of stage Test!'
             }
