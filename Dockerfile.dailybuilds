@@ -10,5 +10,7 @@ ARG git_personal_token
 RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf " https://github.com/"
 RUN git clone https://$git_personal_token@github.com/secureailabs/DailyBuilds.git /Daily_builds
 RUN cd /Daily_builds
+RUN git pull
+
 CMD ["/bin/bash"]
 
