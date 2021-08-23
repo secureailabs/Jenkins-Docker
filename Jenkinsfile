@@ -22,7 +22,7 @@ pipeline {
         stage('development') {
             agent {
                 dockerfile {
-                    filename 'Dockerfile.development'
+                    filename 'Dockerfile..development'
                     label 'docker'
                     additionalBuildArgs '--build-arg git_personal_token=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'
                     customWorkspace './development1'
