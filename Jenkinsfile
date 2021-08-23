@@ -2,7 +2,7 @@
 pipeline {
     agent {
         dockerfile {
-            filename 'Dockerfile.test'
+            filename 'Dockerfile.dailybuilds'
             label 'docker'
             additionalBuildArgs '--build-arg git_personal_token=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'
             args '-t ubuntu_dailybuilds'
