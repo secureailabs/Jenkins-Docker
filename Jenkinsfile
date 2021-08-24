@@ -63,6 +63,7 @@ pipeline {
                 }
                 stage ('test') {
                     steps {
+                        dir('/Test')
                         sh script: '''
                             #!/bin/bash
                             echo "This is current directory $(pwd)"
