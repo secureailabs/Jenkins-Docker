@@ -57,7 +57,7 @@ pipeline {
             }
         }
 
-                stage('Test-test') {
+        stage('Test-test') {
             agent {
                 dockerfile {
                     filename 'Dockerfile.test'
@@ -67,7 +67,9 @@ pipeline {
                 }
             }
             steps {
-                sh 'pytest StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml'
+                sh '''
+                pytest /root/Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml
+                '''
             }
             post {
                 always {
