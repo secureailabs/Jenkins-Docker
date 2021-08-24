@@ -68,7 +68,6 @@ pipeline {
                                 #!/bin/bash
                                 echo "This is current directory $(pwd)"
                                 ls -l
-                                // cd /Test
                                 echo "This is your new directory $(pwd)"
                                 ls -l
                             '''
