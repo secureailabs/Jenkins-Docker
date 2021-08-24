@@ -75,10 +75,10 @@ pipeline {
                         ls -l
                         '''
                     }
-                }
-                post {
-                    always {
-                        junit 'test-results/results.xml'
+                    post {
+                        always {
+                            junit 'test-results/results.xml'
+                        }
                     }
                 }
             }
