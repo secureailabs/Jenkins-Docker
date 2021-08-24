@@ -1,18 +1,22 @@
 FROM ubuntu
+ENV TZ=America/Toronto
 LABEL authors="stanley@secureailabs.com"
 USER root
 
+# Set tzdata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Install dependencies
 RUN apt-get update && apt-get install -y git
-# RUN apt-get install -y python3.9
-# RUN apt-get -y install pip
+RUN apt-get install -y python3.9
+RUN apt-get -y install pip
 
 # GIT
 ARG git_personal_token
 RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf " https://github.com/"
 RUN git clone https://$git_personal_token@github.com/secureailabs/ScratchPad.git /Test
-RUN cd /Test
-# RUN git pull
+WORKDIR /Test
+RUN git pull
+RUN pip install -r StanleyLin/requirements.txt
 # RUN pytest StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml
 
 CMD ["/bin/bash"]
