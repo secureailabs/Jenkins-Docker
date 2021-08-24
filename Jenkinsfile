@@ -64,14 +64,12 @@ pipeline {
                 }
                 stage ('test') {
                     steps {
-                        dir('/Test') {
-                            sh '''
-                                echo "This is current directory $(pwd)"
-                                ls -l
-                                echo "This is your new directory $(pwd)"
-                                ls -l
-                            '''
-                        }
+                        sh '''
+                            echo "This is current directory $(pwd)"
+                            ls -l
+                            echo "This is your new directory $(pwd)"
+                            ls -l
+                        '''
                     }
                 }
             }
