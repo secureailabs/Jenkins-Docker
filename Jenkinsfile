@@ -56,7 +56,7 @@ pipeline {
                                 ls -l
                                 pwd
                                 ls -l /
-                                cp /Test/* .
+                                cd /Test
                                 ls -l
                             '''
                         echo 'End of stage Test!'
