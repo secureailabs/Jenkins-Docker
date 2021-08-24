@@ -71,13 +71,14 @@ pipeline {
                             ls -l
                         '''
                         sh '''
-                        pytest /Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=result.xml
+                        pytest /Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=sail-result.xml
                         ls -l
+                        pytest /Test/StanleyLin/test_api/account_mgmt_api_test -m active -sv --junitxml=account-mgmt-result.xml
                         '''
                     }
                     post {
                         always {
-                            junit 'result.xml'
+                            junit '*.xml'
                         }
                     }
                 }
