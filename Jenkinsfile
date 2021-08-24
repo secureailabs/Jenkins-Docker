@@ -80,6 +80,7 @@ pipeline {
                     always {
                         junit 'test-results/results.xml'
                     }
+                }
             }
         }
 
