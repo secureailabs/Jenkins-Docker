@@ -1,3 +1,4 @@
+/* groovylint-disable NestedBlockDepth */
 pipeline {
     agent none
     stages {
@@ -47,40 +48,55 @@ pipeline {
                     customWorkspace './test-build1'
                 }
             }
-            steps {
-                echo 'Hello World!'
-                sh '''git --version
-                        pwd
-                        ls -l /
-                    '''
-                echo 'End of stage Test!'
+            stages {
+                stage('build') {
+                    steps {
+                        echo 'Hello World!'
+                        sh '''git --version
+                                pwd
+                                ls -l /
+                            '''
+                        echo 'End of stage Test!'
+                    }
+                }
+                stage ('test') {
+                    steps {
+                        sh script: '''
+                            #!/bin/bash
+                            echo "This is current directory $(pwd)"
+                            cd /root/Test/
+                            echo "This is your new directory $(pwd)"
+                            ls -l
+                        '''
+                    }
+                }
             }
         }
 
-        stage('Test-test') {
-            agent {
-                dockerfile {
-                    filename 'Dockerfile.test'
-                    label 'docker'
-                    additionalBuildArgs '--build-arg git_personal_token=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'
-                    customWorkspace './test-build1'
-                }
-            }
-            steps {
-                sh script: '''
-                #!/bin/bash
-                echo "This is current directory $(pwd)"
-                cd /root/Test/
-                echo "This is your new directory $(pwd)"
-                ls -l
-                '''
-                sh 'pytest /root/Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml'
-            }
-            post {
-                always {
-                    junit 'test-results/results.xml'
-                }
-            }
-        }
+        // stage('Test-test') {
+        //     agent {
+        //         dockerfile {
+        //             filename 'Dockerfile.test'
+        //             label 'docker'
+        //             additionalBuildArgs '--build-arg git_personal_token=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'
+        //             customWorkspace './test-build1'
+        //         }
+        //     }
+        //     steps {
+        //         sh script: '''
+        //         #!/bin/bash
+        //         echo "This is current directory $(pwd)"
+        //         cd /root/Test/
+        //         echo "This is your new directory $(pwd)"
+        //         ls -l
+        //         '''
+        //         sh 'pytest /root/Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml'
+        //     }
+        //     post {
+        //         always {
+        //             junit 'test-results/results.xml'
+        //         }
+        //     }
+        // }
     }
 }
