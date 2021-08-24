@@ -49,14 +49,15 @@ pipeline {
                 }
             }
             stages {
-                stage('build') {
+                stage('checkout') {
                     steps {
                         echo 'Hello World!'
                         sh '''git --version
                                 ls -l
                                 pwd
                                 ls -l /
-
+                                cp /root/Test/* .
+                                ls -l
                             '''
                         echo 'End of stage Test!'
                     }
