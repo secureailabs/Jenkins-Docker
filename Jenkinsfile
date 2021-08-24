@@ -77,7 +77,7 @@ pipeline {
                     }
                     post {
                         always {
-                            junit '/root/TMP/test-build1/reports/result.xml'
+                            junit 'result.xml'
                         }
                     }
                 }
