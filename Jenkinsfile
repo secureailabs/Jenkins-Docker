@@ -71,7 +71,7 @@ pipeline {
                             ls -l
                         '''
                         sh '''
-                        pytest /Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml
+                        pytest /Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=result.xml
                         ls -l
                         '''
                     }
