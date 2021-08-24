@@ -49,7 +49,7 @@ pipeline {
                 }
             }
             stages {
-                stage('checkout') {
+                stage('verify-build') {
                     steps {
                         echo 'Hello World!'
                         sh '''git --version
@@ -62,19 +62,19 @@ pipeline {
                         echo 'End of stage Test!'
                     }
                 }
-                // stage ('test') {
-                //     steps {
-                //         dir('/Test') {
-                //             sh script: '''
-                //                 #!/bin/bash
-                //                 echo "This is current directory $(pwd)"
-                //                 ls -l
-                //                 echo "This is your new directory $(pwd)"
-                //                 ls -l
-                //             '''
-                //         }
-                //     }
-                // }
+                stage ('test') {
+                    steps {
+                        dir('/Test') {
+                            sh script: '''
+                                #!/bin/bash
+                                echo "This is current directory $(pwd)"
+                                ls -l
+                                echo "This is your new directory $(pwd)"
+                                ls -l
+                            '''
+                        }
+                    }
+                }
             }
         }
 
