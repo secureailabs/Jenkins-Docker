@@ -53,8 +53,10 @@ pipeline {
                     steps {
                         echo 'Hello World!'
                         sh '''git --version
+                                ls -l
                                 pwd
                                 ls -l /
+
                             '''
                         echo 'End of stage Test!'
                     }
@@ -64,7 +66,8 @@ pipeline {
                         sh script: '''
                             #!/bin/bash
                             echo "This is current directory $(pwd)"
-                            cd /root/Test/
+                            ls -l
+                            // cd /Test
                             echo "This is your new directory $(pwd)"
                             ls -l
                         '''
