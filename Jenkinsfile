@@ -53,14 +53,27 @@ pipeline {
                         pwd
                         ls -l /
                     '''
-                // sh 'pytest StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml'
                 echo 'End of stage Test!'
             }
-            // post {
-            //     always {
-            //         junit 'test-results/results.xml'
-            //     }
-            // }
+        }
+
+                stage('Test-test') {
+            agent {
+                dockerfile {
+                    filename 'Dockerfile.test'
+                    label 'docker'
+                    additionalBuildArgs '--build-arg git_personal_token=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'
+                    customWorkspace './test-build1'
+                }
+            }
+            steps {
+                sh 'pytest StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml'
+            }
+            post {
+                always {
+                    junit 'test-results/results.xml'
+                }
+            }
         }
     }
 }
