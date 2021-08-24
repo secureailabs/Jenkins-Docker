@@ -67,9 +67,14 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                pytest /root/Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml
+                sh script: '''
+                #!/bin/bash
+                echo "This is current directory $(pwd)"
+                cd /root/Test/
+                echo "This is your new directory $(pwd)"
+                ls -l
                 '''
+                sh 'pytest /root/Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=reports/result.xml'
             }
             post {
                 always {
