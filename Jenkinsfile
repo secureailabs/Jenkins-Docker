@@ -56,25 +56,25 @@ pipeline {
                                 ls -l
                                 pwd
                                 ls -l /
-                                cp /root/Test/* .
+                                cp /Test/* .
                                 ls -l
                             '''
                         echo 'End of stage Test!'
                     }
                 }
-                stage ('test') {
-                    steps {
-                        dir('/Test') {
-                            sh script: '''
-                                #!/bin/bash
-                                echo "This is current directory $(pwd)"
-                                ls -l
-                                echo "This is your new directory $(pwd)"
-                                ls -l
-                            '''
-                        }
-                    }
-                }
+                // stage ('test') {
+                //     steps {
+                //         dir('/Test') {
+                //             sh script: '''
+                //                 #!/bin/bash
+                //                 echo "This is current directory $(pwd)"
+                //                 ls -l
+                //                 echo "This is your new directory $(pwd)"
+                //                 ls -l
+                //             '''
+                //         }
+                //     }
+                // }
             }
         }
 
