@@ -8,13 +8,14 @@ pipeline {
     }
     stages {
         stage ('Parallel Stage') {
+            // Start Parallel stage
             parallel {
                 stage('Builds-Daily') {
                     agent {
                         dockerfile {
                             filename 'Dockerfile.dailybuilds'
                             label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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'
+                            additionalBuildArgs '--build-arg git_personal_token=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'
                             customWorkspace './daily-build1'
                         }
                     }
@@ -32,7 +33,7 @@ pipeline {
                         dockerfile {
                             filename 'Dockerfile.development'
                             label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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'
+                            additionalBuildArgs '--build-arg git_personal_token=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'
                             customWorkspace './development1'
                         }
                     }
@@ -50,12 +51,13 @@ pipeline {
                         dockerfile {
                             filename 'Dockerfile.test'
                             label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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'
+                            additionalBuildArgs '--build-arg git_personal_token=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'
                             customWorkspace './test-build1'
                         }
                     }
                     stages {
                         stage('update-repository') {
+                            // Run git pull to grab latest changes for docker container
                             steps {
                                 echo 'Hello World!'
                                 sh '''git --version
@@ -72,6 +74,7 @@ pipeline {
                             }
                         }
                         stage ('test') {
+                            // Run Nightly API tests
                             steps {
                                 sh '''
                                     echo "This is current directory $(pwd)"
@@ -87,6 +90,7 @@ pipeline {
                             }
                             post {
                                 always {
+                                    // Post xml results of pytest run to Jenkins
                                     echo 'End of stage test in Builds-Test!'
                                     junit '*.xml'
                                 }
