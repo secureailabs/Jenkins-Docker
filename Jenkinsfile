@@ -77,6 +77,8 @@ pipeline {
                                     ls -l
                                 '''
                                 sh '''
+                                cd /Test
+                                git pull
                                 pytest /Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=sail-result.xml
                                 ls -l
                                 pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv --junitxml=account-mgmt-result.xml
