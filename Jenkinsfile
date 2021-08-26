@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage ('Parallel Stage') {
             parallel {
-                stage('builds-daily') {
+                stage('Builds-Daily') {
                     agent {
                         dockerfile {
                             filename 'Dockerfile.dailybuilds'
@@ -27,7 +27,7 @@ pipeline {
                         echo 'End of stage daily build!'
                     }
                 }
-                stage('builds-development') {
+                stage('Builds-Development') {
                     agent {
                         dockerfile {
                             filename 'Dockerfile.development'
@@ -45,7 +45,7 @@ pipeline {
                         echo 'End of stage development build!'
                     }
                 }
-                stage('builds-test') {
+                stage('Builds-Test') {
                     agent {
                         dockerfile {
                             filename 'Dockerfile.test'
@@ -68,7 +68,7 @@ pipeline {
                                         git pull
                                         ls -l
                                     '''
-                                echo 'End of stage Test!'
+                                echo 'End of stage update repository in Builds-Test!'
                             }
                         }
                         stage ('test') {
@@ -87,6 +87,7 @@ pipeline {
                             }
                             post {
                                 always {
+                                    echo 'End of stage test in Builds-Test!'
                                     junit '*.xml'
                                 }
                             }
