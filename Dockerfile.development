@@ -3,12 +3,17 @@ LABEL authors="stanley@secureailabs.com"
 USER root
 
 # Install dependencies
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y \
+git \
+make \
+libcurl4-gnutls-dev \
+build-essential
 
 # GIT
 ARG git_personal_token
 RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf " https://github.com/"
 RUN git clone https://$git_personal_token@github.com/secureailabs/Development.git /Development
+RUN sh /Development/install.sh
 
 CMD ["/bin/bash"]
 

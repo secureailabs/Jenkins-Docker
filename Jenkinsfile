@@ -42,7 +42,12 @@ pipeline {
                         sh '''git --version
                                 pwd
                                 ls -l /
+                                cd /Development
+                                git pull
+                                ls -l
+                                cd Milestone3
                                 '''
+                        sh 'CreateDailyBuild.sh'
                         echo 'End of stage development build!'
                     }
                 }
@@ -66,7 +71,6 @@ pipeline {
                                         ls -l /
                                         cd /Test
                                         ls -l
-                                        cd /Test
                                         git pull
                                         ls -l
                                     '''
@@ -83,7 +87,7 @@ pipeline {
                                     ls -l
                                 '''
                                 sh '''
-                                pytest /Test/StanleyLin/test_api/sail_api_test.py -m active -sv --junitxml=sail-result.xml
+                                pytest /Test/StanleyLin/test_api/sail_portal_api_test.py -m active -sv --junitxml=sail-result.xml
                                 ls -l
                                 pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv --junitxml=account-mgmt-result.xml
                                 '''
