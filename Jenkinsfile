@@ -46,8 +46,14 @@ pipeline {
                                 git pull
                                 ls -l
                                 cd Milestone3
+                                CreateDailyBuild.sh
+                                retVal=$?
+                                echo $retVal
+                                if [ $retVal -ne 0 ]; then
+                                    echo "Error Build FAILED"
+                                fi
+                                exit $retVal
                                 '''
-                        sh 'CreateDailyBuild.sh'
                         echo 'End of stage development build!'
                     }
                 }
