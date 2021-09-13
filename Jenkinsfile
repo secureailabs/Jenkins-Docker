@@ -47,7 +47,7 @@ pipeline {
                                 ls -l
                                 cd /Development/Milestone3
                                 ls -l
-                                CreateDailyBuild.sh
+                                ./CreateDailyBuild.sh
                                 retVal=$?
                                 echo $retVal
                                 if [ $retVal -ne 0 ]; then
