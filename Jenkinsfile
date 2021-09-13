@@ -34,7 +34,7 @@ pipeline {
                             filename 'Dockerfile.development'
                             label 'docker'
                             additionalBuildArgs '--build-arg git_personal_token=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'
-                            args '-t ubuntu-dev -p 6200:6200 -p 27017:27017'
+                            args '-p 6200:6200 -p 27017:27017'
                             customWorkspace './development1'
                         }
                     }
