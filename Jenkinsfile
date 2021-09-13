@@ -45,7 +45,8 @@ pipeline {
                                 cd /Development
                                 git pull
                                 ls -l
-                                cd Milestone3
+                                cd /Development/Milestone3
+                                ls -l
                                 CreateDailyBuild.sh
                                 retVal=$?
                                 echo $retVal
