@@ -34,28 +34,37 @@ pipeline {
                             filename 'Dockerfile.development'
                             label 'docker'
                             additionalBuildArgs '--build-arg git_personal_token=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'
+                            args '-t ubuntu-dev -p 6200:6200 -p 27017:27017'
                             customWorkspace './development1'
                         }
                     }
-                    steps {
-                        echo 'Hello World from development!'
-                        sh '''git --version
-                                pwd
-                                ls -l /
-                                cd /Development
-                                git pull
-                                ls -l
-                                cd /Development/Milestone3
-                                ls -l
-                                ./CreateDailyBuild.sh
-                                retVal=$?
-                                echo $retVal
-                                if [ $retVal -ne 0 ]; then
-                                    echo "Error Build FAILED"
-                                fi
-                                exit $retVal
-                                '''
-                        echo 'End of stage development build!'
+                    stages {
+                        stage('Build') {
+                            // Run git pull to grab latest changes for docker container
+                            steps {
+                                echo 'Hello World from development!'
+                                sh '''git --version
+                                        pwd
+                                        ls -l /
+                                        cd /Development
+                                        git pull
+                                        ls -l
+                                        cd /Development/Milestone3
+                                        ls -l
+                                        ./CreateDailyBuild.sh
+                                        retVal=$?
+                                        echo $retVal
+                                        if [ $retVal -ne 0 ]; then
+                                            echo "Error Build FAILED"
+                                        fi
+                                        exit $retVal
+                                        ./DatabaseGateway &
+                                        ./RestApiPortal &
+                                        ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
+                                        '''
+                                echo 'End of stage Build in Builds-Development!'
+                            }
+                        }
                     }
                 }
                 stage('Builds-Test') {
@@ -68,7 +77,7 @@ pipeline {
                         }
                     }
                     stages {
-                        stage('update-repository') {
+                        stage('Build') {
                             // Run git pull to grab latest changes for docker container
                             steps {
                                 echo 'Hello World!'
@@ -81,7 +90,7 @@ pipeline {
                                         git pull
                                         ls -l
                                     '''
-                                echo 'End of stage update repository in Builds-Test!'
+                                echo 'End of stage Build in Builds-Test!'
                             }
                         }
                         stage ('test') {
@@ -94,9 +103,9 @@ pipeline {
                                     ls -l
                                 '''
                                 sh '''
-                                pytest /Test/StanleyLin/test_api/sail_portal_api_test.py -m active -sv --junitxml=sail-result.xml
+                                pytest /Test/StanleyLin/test_api/sail_portal_api_test.py -m active --ip 10.0.0.5 -sv --junitxml=sail-result.xml
                                 ls -l
-                                pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv --junitxml=account-mgmt-result.xml
+                                pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv --ip 10.0.0.5 --junitxml=account-mgmt-result.xml
                                 '''
                             }
                             post {
