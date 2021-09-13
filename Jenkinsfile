@@ -104,9 +104,9 @@ pipeline {
                                     ls -l
                                 '''
                                 sh '''
-                                pytest /Test/StanleyLin/test_api/sail_portal_api_test.py -m active --ip 10.0.0.5 -sv --junitxml=sail-result.xml
+                                pytest /Test/StanleyLin/test_api/sail_portal_api_test.py -m active -sv --junitxml=sail-result.xml
                                 ls -l
-                                pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv --ip 10.0.0.5 --junitxml=account-mgmt-result.xml
+                                pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv --junitxml=account-mgmt-result.xml
                                 '''
                             }
                             post {
