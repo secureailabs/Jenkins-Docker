@@ -50,16 +50,19 @@ pipeline {
                                     git pull
                                     ls -l
                                     cd /Development/Milestone3
+                                    sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
+                                    ps -ef
                                     ls -l
                                     ./CreateDailyBuild.sh
                                     cd Binary/
-                                    sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
+                                    ll
                                     ./DatabaseGateway &
                                     ./RestApiPortal &
-                                    ls -l
+                                    ll
                                     '''
                             sh '''
-                                cd /Development/Binary/
+                                cd /Development/Milestone3/Binary/
+                                ll
                                 ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
                                 '''
                             echo 'End of stage Build in Builds-Development!'
