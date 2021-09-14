@@ -28,7 +28,7 @@ pipeline {
                 //         echo 'End of stage daily build!'
                 //     }
                 // }
-                stage('Builds-Development') {
+                stage('BackEnd') {
                     agent {
                         dockerfile {
                             filename 'Dockerfile.development'
@@ -60,11 +60,24 @@ pipeline {
                                         ./RestApiPortal &
                                         ls -l
                                         '''
-                                sh '''
-                                    cd /Development/Milestone3/Binary/
-                                    ls -l
-                                    ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
-                                    '''
+                                script {
+                                    try {
+                                        sh '''
+                                            cd /Development/Milestone3/Binary/
+                                            ls -l
+                                            ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
+                                            '''
+                                    } catch (exception) {
+                                        echo getStackTrace(exception)
+                                        echo 'Error detected, retrying'
+                                        sh '''
+                                            cd /Development/Milestone3/Binary/
+                                            ls -l
+                                            ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200 -d
+                                            ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
+                                            '''
+                                    }
+                                }
                                 echo 'End of stage Build in Builds-Development!'
                             }
                         }
@@ -92,7 +105,7 @@ pipeline {
                 //         }
                 //     }
                 // }
-                stage('Builds-Test') {
+                stage('SailTap') {
                     agent {
                         dockerfile {
                             filename 'Dockerfile.test'
