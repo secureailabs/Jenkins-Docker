@@ -54,15 +54,15 @@ pipeline {
                                         ps -ef
                                         ls -l
                                         ./CreateDailyBuild.sh
-                                        cd Binary/
-                                        ll
+                                        cd /Development/Milestone3/Binary/
+                                        ls -l 
                                         ./DatabaseGateway &
                                         ./RestApiPortal &
-                                        ll
+                                        ls -l
                                         '''
                                 sh '''
                                     cd /Development/Milestone3/Binary/
-                                    ll
+                                    ls -l
                                     ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
                                     '''
                                 echo 'End of stage Build in Builds-Development!'
