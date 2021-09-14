@@ -55,7 +55,7 @@ pipeline {
                                         ls -l
                                         ./CreateDailyBuild.sh
                                         cd /Development/Milestone3/Binary/
-                                        ls -l 
+                                        ls -l
                                         ./DatabaseGateway &
                                         ./RestApiPortal &
                                         ls -l
