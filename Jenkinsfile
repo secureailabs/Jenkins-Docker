@@ -61,7 +61,7 @@ pipeline {
                                         ll
                                         '''
                                 sh '''
-                                    cd /Development/Binary/
+                                    cd /Development/Milestone3/Binary/
                                     ll
                                     ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
                                     '''
