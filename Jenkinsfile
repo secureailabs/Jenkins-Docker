@@ -33,7 +33,7 @@ pipeline {
                         dockerfile {
                             filename 'Dockerfile.development'
                             label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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'
+                            additionalBuildArgs '--build-arg git_personal_token=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 -t ubuntu-development:1.0'
                             args '-p 6200:6200 -p 27017:27017'
                             customWorkspace './development1'
                         }
@@ -97,7 +97,7 @@ pipeline {
                         dockerfile {
                             filename 'Dockerfile.test'
                             label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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'
+                            additionalBuildArgs '--build-arg git_personal_token=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 -t ubuntu-sailtap:1.0'
                             customWorkspace './test-build1'
                         }
                     }
