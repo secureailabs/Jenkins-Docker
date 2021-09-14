@@ -51,11 +51,9 @@ pipeline {
                                         ls -l
                                         cd /Development/Milestone3
                                         ls -l
-                                        sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
                                         ./CreateDailyBuild.sh
-                                        retVal=$?
-                                        echo $retVal
                                         cd Binary/
+                                        sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
                                         ./DatabaseGateway &
                                         ./RestApiPortal &
                                         ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
