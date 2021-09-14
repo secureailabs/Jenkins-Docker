@@ -10,64 +10,99 @@ pipeline {
         stage ('Parallel Stage') {
             // Start Parallel stage
             parallel {
-                stage('Builds-Daily') {
-                    agent {
-                        dockerfile {
-                            filename 'Dockerfile.dailybuilds'
-                            label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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'
-                            customWorkspace './daily-build1'
-                        }
-                    }
-                    steps {
-                        echo 'Hello World from daily build!'
-                        sh '''git --version
-                                pwd
-                                ls -l /
-                                '''
-                        echo 'End of stage daily build!'
-                    }
-                }
+                // stage('Builds-Daily') {
+                //     agent {
+                //         dockerfile {
+                //             filename 'Dockerfile.dailybuilds'
+                //             label 'docker'
+                //             additionalBuildArgs '--build-arg git_personal_token=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'
+                //             customWorkspace './daily-build1'
+                //         }
+                //     }
+                //     steps {
+                //         echo 'Hello World from daily build!'
+                //         sh '''git --version
+                //                 pwd
+                //                 ls -l /
+                //                 '''
+                //         echo 'End of stage daily build!'
+                //     }
+                // }
                 stage('Builds-Development') {
                     agent {
                         dockerfile {
                             filename 'Dockerfile.development'
                             label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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'
+                            additionalBuildArgs '--build-arg git_personal_token=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 -t ubuntu-development:1.0'
+                            args '-p 6200:6200 -p 27017:27017'
                             customWorkspace './development1'
                         }
                     }
-                    steps {
-                        echo 'Hello World from development!'
-                        sh '''git --version
-                                pwd
-                                ls -l /
-                                cd /Development
-                                git pull
-                                ls -l
-                                cd Milestone3
-                                CreateDailyBuild.sh
-                                retVal=$?
-                                echo $retVal
-                                if [ $retVal -ne 0 ]; then
-                                    echo "Error Build FAILED"
-                                fi
-                                exit $retVal
-                                '''
-                        echo 'End of stage development build!'
+                    stages {
+                        stage('Build') {
+                            // Run git pull to grab latest changes for docker container
+                            steps {
+                                echo 'Hello World from development!'
+                                sh '''git --version
+                                        pwd
+                                        ls -l /
+                                        cd /Development
+                                        git pull
+                                        ls -l
+                                        cd /Development/Milestone3
+                                        sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
+                                        ps -ef
+                                        ls -l
+                                        ./CreateDailyBuild.sh
+                                        cd /Development/Milestone3/Binary/
+                                        ls -l
+                                        ./DatabaseGateway &
+                                        ./RestApiPortal &
+                                        ls -l
+                                        '''
+                                sh '''
+                                    cd /Development/Milestone3/Binary/
+                                    ls -l
+                                    ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
+                                    '''
+                                echo 'End of stage Build in Builds-Development!'
+                            }
+                        }
                     }
                 }
+                // stage('Run Api Tests') {
+                //     steps {
+                //         sh '''
+                //             cd /root/SAIL/ScratchPad/StanleyLin/
+
+                //             '''
+                //         sh '''
+                //             cd /root/SAIL/ScratchPad
+                //             git pull
+                //             pytest /root/SAIL/ScratchPad/StanleyLin//test_api/sail_portal_api_test.py -m active -ip 10.0.0.5 -sv --junitxml=sail-result.xml
+                //             ls -l
+                //             pytest /root/SAIL/ScratchPad/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv -ip 10.0.0.5 --junitxml=account-mgmt-result.xml
+                //             '''
+                //     }
+                //     post {
+                //         always {
+                //             // Post xml results of pytest run to Jenkins
+                //             echo 'End of stage test in Builds-Test!'
+                //             junit '*.xml'
+                //         }
+                //     }
+                // }
                 stage('Builds-Test') {
                     agent {
                         dockerfile {
                             filename 'Dockerfile.test'
                             label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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'
+                            additionalBuildArgs '--build-arg git_personal_token=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 -t ubuntu-sailtap:1.0'
                             customWorkspace './test-build1'
                         }
                     }
                     stages {
-                        stage('update-repository') {
+                        stage('Build') {
                             // Run git pull to grab latest changes for docker container
                             steps {
                                 echo 'Hello World!'
@@ -80,7 +115,7 @@ pipeline {
                                         git pull
                                         ls -l
                                     '''
-                                echo 'End of stage update repository in Builds-Test!'
+                                echo 'End of stage Build in Builds-Test!'
                             }
                         }
                         stage ('test') {
