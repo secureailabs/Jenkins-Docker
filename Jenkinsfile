@@ -10,24 +10,24 @@ pipeline {
         stage ('Parallel Stage') {
             // Start Parallel stage
             parallel {
-                stage('Builds-Daily') {
-                    agent {
-                        dockerfile {
-                            filename 'Dockerfile.dailybuilds'
-                            label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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'
-                            customWorkspace './daily-build1'
-                        }
-                    }
-                    steps {
-                        echo 'Hello World from daily build!'
-                        sh '''git --version
-                                pwd
-                                ls -l /
-                                '''
-                        echo 'End of stage daily build!'
-                    }
-                }
+                // stage('Builds-Daily') {
+                //     agent {
+                //         dockerfile {
+                //             filename 'Dockerfile.dailybuilds'
+                //             label 'docker'
+                //             additionalBuildArgs '--build-arg git_personal_token=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'
+                //             customWorkspace './daily-build1'
+                //         }
+                //     }
+                //     steps {
+                //         echo 'Hello World from daily build!'
+                //         sh '''git --version
+                //                 pwd
+                //                 ls -l /
+                //                 '''
+                //         echo 'End of stage daily build!'
+                //     }
+                // }
                 stage('Builds-Development') {
                     agent {
                         dockerfile {
@@ -55,10 +55,7 @@ pipeline {
                                         ./CreateDailyBuild.sh
                                         retVal=$?
                                         echo $retVal
-                                        if [ $retVal -ne 0 ]; then
-                                            echo "Error Build FAILED"
-                                        fi
-                                        exit $retVal
+                                        cd Binary/
                                         ./DatabaseGateway &
                                         ./RestApiPortal &
                                         ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
@@ -68,6 +65,28 @@ pipeline {
                         }
                     }
                 }
+                // stage('Run Api Tests') {
+                //     steps {
+                //         sh '''
+                //             cd /root/SAIL/ScratchPad/StanleyLin/
+
+                //             '''
+                //         sh '''
+                //             cd /root/SAIL/ScratchPad
+                //             git pull
+                //             pytest /root/SAIL/ScratchPad/StanleyLin//test_api/sail_portal_api_test.py -m active -ip 10.0.0.5 -sv --junitxml=sail-result.xml
+                //             ls -l
+                //             pytest /root/SAIL/ScratchPad/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv -ip 10.0.0.5 --junitxml=account-mgmt-result.xml
+                //             '''
+                //     }
+                //     post {
+                //         always {
+                //             // Post xml results of pytest run to Jenkins
+                //             echo 'End of stage test in Builds-Test!'
+                //             junit '*.xml'
+                //         }
+                //     }
+                // }
                 stage('Builds-Test') {
                     agent {
                         dockerfile {
