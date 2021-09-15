@@ -70,6 +70,8 @@ pipeline {
                     docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py --ip 10.0.0.5 -m active -sv --junitxml=account-mgmt-result.xml
                     docker cp ubuntu_tst_bash:/Test/sail-result.xml .
                     docker cp ubuntu_tst_bash:/Test/account-mgmt-result.xml .
+                    docker cp ubuntu_dev_bash:/Development/Milestone3/Binary/portal.log .
+                    docker cp ubuntu_dev_bash:/Development/Milestone3/Binary/database.log .
                     '''
                 
             }
@@ -78,6 +80,7 @@ pipeline {
                     // Post xml results of pytest run to Jenkins
                     echo 'End of stage test in Run SAILTAP!'
                     junit '*.xml'
+                    archiveArtifacts artifacts: '*.log'
                 }
             }
         }
