@@ -20,4 +20,3 @@ RUN git pull
 RUN pip install -r StanleyLin/requirements.txt
 
 CMD ["/bin/bash"]
-

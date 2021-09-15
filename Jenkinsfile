@@ -1,160 +1,83 @@
 /* groovylint-disable NestedBlockDepth */
 pipeline {
-    agent none
+    agent any
     options {
     buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
     parallelsAlwaysFailFast()
     timestamps()
     }
     stages {
-        stage ('Parallel Stage') {
-            // Start Parallel stage
-            parallel {
-                // stage('Builds-Daily') {
-                //     agent {
-                //         dockerfile {
-                //             filename 'Dockerfile.dailybuilds'
-                //             label 'docker'
-                //             additionalBuildArgs '--build-arg git_personal_token=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'
-                //             customWorkspace './daily-build1'
-                //         }
-                //     }
-                //     steps {
-                //         echo 'Hello World from daily build!'
-                //         sh '''git --version
-                //                 pwd
-                //                 ls -l /
-                //                 '''
-                //         echo 'End of stage daily build!'
-                //     }
-                // }
-                stage('BackEnd') {
-                    agent {
-                        dockerfile {
-                            filename 'Dockerfile.development'
-                            label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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 -t ubuntu-development:1.0'
-                            args '-p 6200:6200 -p 27017:27017'
-                            customWorkspace './development1'
-                        }
-                    }
-                    stages {
-                        stage('Build') {
-                            // Run git pull to grab latest changes for docker container
-                            steps {
-                                echo 'Hello World from development!'
-                                sh '''git --version
-                                        pwd
-                                        ls -l /
-                                        cd /Development
-                                        git pull
-                                        ls -l
-                                        cd /Development/Milestone3
-                                        sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
-                                        ps -ef
-                                        ls -l
-                                        ./CreateDailyBuild.sh
-                                        cd /Development/Milestone3/Binary/
-                                        ls -l
-                                        ./DatabaseGateway &
-                                        ./RestApiPortal &
-                                        ls -l
-                                        '''
-                                script {
-                                    try {
-                                        sh '''
-                                            cd /Development/Milestone3/Binary/
-                                            ls -l
-                                            ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
-                                            '''
-                                    } catch (exception) {
-                                        echo getStackTrace(exception)
-                                        echo 'Error detected, retrying'
-                                        sh '''
-                                            cd /Development/Milestone3/Binary/
-                                            ls -l
-                                            ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200 -d
-                                            ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200
-                                            '''
-                                    }
-                                }
-                                echo 'End of stage Build in Builds-Development!'
-                            }
-                        }
+        stage('Build Binaries & Deploy API Portal') {
+            steps {
+                sh '''
+                    pwd
+                    ls -l
+                    docker kill $(docker ps -q)
+                    docker rm $(docker ps -a -q)
+                    '''
+                echo 'Starting to build docker image: Backend Api Portal Server'
+                sh 'docker build --build-arg git_personal_token=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 -f Dockerfile.development -t ubuntu-development:1.0 .'
+                echo 'Run Backend docker image in background'
+                sh 'docker run --name ubuntu_dev_bash -dit -p 6200:6200 -p 27017:27017 ubuntu-development:1.0 /bin/bash'
+                sh '''
+                    docker exec -w /Development/ ubuntu_dev_bash pwd
+                    docker exec -w /Development/ ubuntu_dev_bash ls -l
+                    docker exec -w /Development/ ubuntu_dev_bash git pull
+                    docker exec -w /Development/Milestone3/ ubuntu_dev_bash sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
+                    docker exec -w /Development/Milestone3/ ubuntu_dev_bash ps -ef
+                    docker exec -w /Development/Milestone3/ ubuntu_dev_bash sh CreateDailyBuild.sh
+                    docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseGateway  > database.log &"
+                    sleep 1
+                    docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./RestApiPortal > portal.log &"
+                    sleep 1
+                    docker exec -w /Development/Milestone3/ ubuntu_dev_bash ps -ef
+                    # docker stop ubuntu_dev_bash
+                    # docker rm ubuntu_dev_bash
+                    # docker kill $(docker ps -q)
+                    # docker rm $(docker ps -a -q)
+                    '''
+                
+                script {
+                    try {
+                        echo "Load Database"
+                        sh 'docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200"'
+                    }catch (exception) {
+                        echo getStackTrace(exception)
+                        echo 'Error detected, retrying...'
+                        sh '''
+                            docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200 -d"
+                            docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200"
+                            ''' 
                     }
                 }
-                // stage('Run Api Tests') {
-                //     steps {
-                //         sh '''
-                //             cd /root/SAIL/ScratchPad/StanleyLin/
+                echo 'Backend Portal Server is Deployed and Ready to use'
 
-                //             '''
-                //         sh '''
-                //             cd /root/SAIL/ScratchPad
-                //             git pull
-                //             pytest /root/SAIL/ScratchPad/StanleyLin//test_api/sail_portal_api_test.py -m active -ip 10.0.0.5 -sv --junitxml=sail-result.xml
-                //             ls -l
-                //             pytest /root/SAIL/ScratchPad/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv -ip 10.0.0.5 --junitxml=account-mgmt-result.xml
-                //             '''
-                //     }
-                //     post {
-                //         always {
-                //             // Post xml results of pytest run to Jenkins
-                //             echo 'End of stage test in Builds-Test!'
-                //             junit '*.xml'
-                //         }
-                //     }
-                // }
-                stage('SailTap') {
-                    agent {
-                        dockerfile {
-                            filename 'Dockerfile.test'
-                            label 'docker'
-                            additionalBuildArgs '--build-arg git_personal_token=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 -t ubuntu-sailtap:1.0'
-                            customWorkspace './test-build1'
-                        }
-                    }
-                    stages {
-                        stage('Build') {
-                            // Run git pull to grab latest changes for docker container
-                            steps {
-                                echo 'Hello World!'
-                                sh '''git --version
-                                        ls -l
-                                        pwd
-                                        ls -l /
-                                        cd /Test
-                                        ls -l
-                                        git pull
-                                        ls -l
-                                    '''
-                                echo 'End of stage Build in Builds-Test!'
-                            }
-                        }
-                        stage ('test') {
-                            // Run Nightly API tests
-                            steps {
-                                sh '''
-                                    echo "This is current directory $(pwd)"
-                                    ls -l
-                                    echo "This is your new directory $(pwd)"
-                                    ls -l
-                                '''
-                                sh '''
-                                pytest /Test/StanleyLin/test_api/sail_portal_api_test.py -m active -sv --junitxml=sail-result.xml
-                                ls -l
-                                pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py -m active -sv --junitxml=account-mgmt-result.xml
-                                '''
-                            }
-                            post {
-                                always {
-                                    // Post xml results of pytest run to Jenkins
-                                    echo 'End of stage test in Builds-Test!'
-                                    junit '*.xml'
-                                }
-                            }
-                        }
-                    }
+            }
+        }
+        stage('Run SailApiTAP') {
+            steps {
+                echo 'Starting to build docker image for test: SAILTAP'
+                sh 'ls -l'
+                sh 'docker build --build-arg git_personal_token=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 -f Dockerfile.test -t ubuntu-sailtap:1.0 .'
+                sh 'docker run --name ubuntu_tst_bash -dit ubuntu-sailtap:1.0 /bin/bash'
+                sh '''
+                    docker exec -w /Test/ ubuntu_tst_bash pwd
+                    docker exec -w /Test/ ubuntu_tst_bash ls -l
+                    docker exec -w /Test/ ubuntu_tst_bash git pull
+                    '''
+                sh '''
+                    docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/sail_portal_api_test.py --ip 10.0.0.5 -m active -sv --junitxml=sail-result.xml
+                    docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py --ip 10.0.0.5 -m active -sv --junitxml=account-mgmt-result.xml
+                    docker cp ubuntu_tst_bash:/Test/sail-result.xml .
+                    docker cp ubuntu_tst_bash:/Test/account-mgmt-result.xml .
+                    '''
+                
+            }
+            post {
+                always {
+                    // Post xml results of pytest run to Jenkins
+                    echo 'End of stage test in Run SAILTAP!'
+                    junit '*.xml'
                 }
             }
         }
