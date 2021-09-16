@@ -7,7 +7,7 @@ pipeline {
     timestamps()
     }
     environment {
-        api_image = None
+        api_image = docker.build('ubuntu-development:1.0', '--build-arg git_personal_token=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 -f Dockerfile.development .')
     }
     stages {
         stage('Build Binaries & Deploy API Portal') {
@@ -20,15 +20,13 @@ pipeline {
                 //     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
                 script {
-                    /* groovylint-disable-next-line UnnecessaryGString */
-                    api_image = docker.build("ubuntu-development:1.0", "--build-arg git_personal_token=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 -f Dockerfile.development .")
                     api_image.inside {
                         sh 'echo "Tests passed"'
                     }
-                    // docker.image('ubuntu-development:1.0').inside {
-                    //     sh 'pwd'
-                    //     sh 'ls -l'
-                    // }
+                // docker.image('ubuntu-development:1.0').inside {
+                //     sh 'pwd'
+                //     sh 'ls -l'
+                // }
                 }
                 echo 'Backend Portal Server is Deployed and Ready to use'
             }
