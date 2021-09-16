@@ -60,16 +60,17 @@ pipeline {
             steps {
                 echo 'Starting to build docker image for test: SAILTAP'
                 sh 'ls -l'
-                docker.build('ubuntu-sailtap:1.0', '--build-arg git_personal_token=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 -f Dockerfile.test .')
-                sh 'docker run --name ubuntu_tst_bash -dit ubuntu-sailtap:1.0 /bin/bash'
-                sh  label:
+                script {
+                    docker.build('ubuntu-sailtap:1.0', '--build-arg git_personal_token=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 -f Dockerfile.test .')
+                    sh 'docker run --name ubuntu_tst_bash -dit ubuntu-sailtap:1.0 /bin/bash'
+                    sh  label:
                     'Update Test Repo',
                     script:'''
                     docker exec -w /Test/ ubuntu_tst_bash pwd
                     docker exec -w /Test/ ubuntu_tst_bash ls -l
                     docker exec -w /Test/ ubuntu_tst_bash git pull
                     '''
-                sh  label:
+                    sh  label:
                     'Running Tests',
                     script:'''
                     docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/sail_portal_api_test.py --ip 10.0.0.5 -m active -sv --junitxml=sail-result.xml
@@ -79,6 +80,7 @@ pipeline {
                     docker cp ubuntu_dev_bash:/Development/Milestone3/Binary/portal.log .
                     docker cp ubuntu_dev_bash:/Development/Milestone3/Binary/database.log .
                     '''
+                }
             }
             post {
                 always {
