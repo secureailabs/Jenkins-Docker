@@ -43,6 +43,7 @@ pipeline {
                     script:'''
                     set -x
                     docker exec -w /Development/Milestone3/ ubuntu_dev_bash sh CreateDailyBuild.sh
+                    docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "ls -l"
                     docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseGateway  > database.log &"
                     sleep 1
                     docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./RestApiPortal > portal.log &"
@@ -57,6 +58,7 @@ pipeline {
                 script {
                     try {
                         echo 'Load Database'
+                        sh 'docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "ls -l"'
                         sh 'docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200"'
                     }catch (exception) {
                         echo getStackTrace(exception)
