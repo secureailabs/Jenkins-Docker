@@ -9,12 +9,12 @@ pipeline {
     stages {
         stage('Build Binaries & Deploy API Portal') {
             steps {
-                sh '''
-                    pwd
-                    ls -l
-                    docker kill $(docker ps -q)
-                    docker rm $(docker ps -a -q)
-                    '''
+                // sh '''
+                //     pwd
+                //     ls -l
+                //     docker kill $(docker ps -q)
+                //     docker rm $(docker ps -a -q)
+                //     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
                 script {
                     /* groovylint-disable-next-line UnnecessaryGString */
