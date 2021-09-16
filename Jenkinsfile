@@ -26,6 +26,7 @@ pipeline {
                     sh  label:
                     'Update Repo and start Mongod',
                     script:'''
+                    set -x
                     docker exec -w /Development/ ubuntu_dev_bash pwd
                     docker exec -w /Development/ ubuntu_dev_bash ls -l
                     docker exec -w /Development/ ubuntu_dev_bash git pull
@@ -40,9 +41,9 @@ pipeline {
                     script:'''
                     set -x
                     docker exec -w /Development/Milestone3/ ubuntu_dev_bash sh CreateDailyBuild.sh
-                    docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseGateway  > database.log &; exit $?"
+                    docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseGateway  > database.log &"
                     sleep 1
-                    docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./RestApiPortal > portal.log &; exit $?"
+                    docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./RestApiPortal > portal.log &"
                     sleep 1
                     docker exec -w /Development/Milestone3/ ubuntu_dev_bash ps -ef
                     # docker stop ubuntu_dev_bash
@@ -59,14 +60,18 @@ pipeline {
             steps {
                 echo 'Starting to build docker image for test: SAILTAP'
                 sh 'ls -l'
-                sh 'docker build --build-arg git_personal_token=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 -f Dockerfile.test -t ubuntu-sailtap:1.0 .'
+                docker.build('ubuntu-sailtap:1.0', '--build-arg git_personal_token=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 -f Dockerfile.test .')
                 sh 'docker run --name ubuntu_tst_bash -dit ubuntu-sailtap:1.0 /bin/bash'
-                sh '''
+                sh  label:
+                    'Update Test Repo',
+                    script:'''
                     docker exec -w /Test/ ubuntu_tst_bash pwd
                     docker exec -w /Test/ ubuntu_tst_bash ls -l
                     docker exec -w /Test/ ubuntu_tst_bash git pull
                     '''
-                sh '''
+                sh  label:
+                    'Running Tests',
+                    script:'''
                     docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/sail_portal_api_test.py --ip 10.0.0.5 -m active -sv --junitxml=sail-result.xml
                     docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/account_mgmt_api_test.py --ip 10.0.0.5 -m active -sv --junitxml=account-mgmt-result.xml
                     docker cp ubuntu_tst_bash:/Test/sail-result.xml .
@@ -74,7 +79,6 @@ pipeline {
                     docker cp ubuntu_dev_bash:/Development/Milestone3/Binary/portal.log .
                     docker cp ubuntu_dev_bash:/Development/Milestone3/Binary/database.log .
                     '''
-                
             }
             post {
                 always {
