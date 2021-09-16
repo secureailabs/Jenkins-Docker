@@ -26,6 +26,7 @@ pipeline {
                     sh  label:
                     'Update Repo and start Mongod',
                     script:'''
+                    echo "Update Repo and start Mongod"
                     set -x
                     docker exec -w /Development/ ubuntu_dev_bash pwd
                     docker exec -w /Development/ ubuntu_dev_bash ls -l
@@ -36,6 +37,7 @@ pipeline {
                 }
 
                 script {
+                    echo 'Build Binaries'
                     sh label:
                     'Build Binaries',
                     script:'''
@@ -52,6 +54,19 @@ pipeline {
                     # docker rm $(docker ps -a -q)
                     '''
                 }
+                script {
+                    try {
+                        echo 'Load Database'
+                        sh 'docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200"'
+                    }catch (exception) {
+                        echo getStackTrace(exception)
+                        echo 'Error detected, retrying...'
+                        sh '''
+                            docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200 -d"
+                            docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200"
+                            ''' 
+                    }
+                }
                 echo 'Backend Portal Server is Deployed and Ready to use'
 
             }
@@ -61,6 +76,7 @@ pipeline {
                 echo 'Starting to build docker image for test: SAILTAP'
                 sh 'ls -l'
                 script {
+                    echo 'Update Test Repo'
                     docker.build('ubuntu-sailtap:1.0', '--build-arg git_personal_token=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 -f Dockerfile.test .')
                     sh 'docker run --name ubuntu_tst_bash -dit ubuntu-sailtap:1.0 /bin/bash'
                     sh  label:
@@ -70,6 +86,7 @@ pipeline {
                     docker exec -w /Test/ ubuntu_tst_bash ls -l
                     docker exec -w /Test/ ubuntu_tst_bash git pull
                     '''
+                    echo 'Running Tests'
                     sh  label:
                     'Running Tests',
                     script:'''
