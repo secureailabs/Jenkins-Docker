@@ -20,9 +20,7 @@ pipeline {
                 //     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
                 script {
-                    api_image.inside {
-                        sh 'echo "Tests passed"'
-                    }
+                    sh 'pwd'
                 // docker.image('ubuntu-development:1.0').inside {
                 //     sh 'pwd'
                 //     sh 'ls -l'
