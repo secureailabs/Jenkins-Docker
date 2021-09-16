@@ -12,20 +12,12 @@ pipeline {
     stages {
         stage('Build Binaries & Deploy API Portal') {
             steps {
-                // sh '''
-                //     pwd
-                //     ls -l
-                //     docker kill $(docker ps -q)
-                //     docker rm $(docker ps -a -q)
-                //     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
                 script {
                     docker.build('ubuntu-development:1.0', '--build-arg git_personal_token=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 -f Dockerfile.development .')
                     sh 'pwd'
                     sh 'docker run --name ubuntu_dev_bash -dit -p 6200:6200 -p 27017:27017 ubuntu-development:1.0 /bin/bash'
-                    sh label:
-                    ' Update Repo & Start Mongodb'
-                    script:'''
+                    sh '''
                     docker exec -w /Development/ ubuntu_dev_bash pwd
                     docker exec -w /Development/ ubuntu_dev_bash ls -l
                     docker exec -w /Development/ ubuntu_dev_bash git pull
@@ -39,7 +31,6 @@ pipeline {
                     'Build Binaries',
                     script:'''
                     docker exec -w /Development/Milestone3/ ubuntu_dev_bash sh CreateDailyBuild.sh
-                    '''
                     # docker exec -w /Development/Milestone3/ ubuntu_dev_bash sh CreateDailyBuild.sh
                     # docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseGateway  > database.log &"
                     # sleep 1
@@ -50,6 +41,7 @@ pipeline {
                     # docker rm ubuntu_dev_bash
                     # docker kill $(docker ps -q)
                     # docker rm $(docker ps -a -q)
+                    '''
                 }
                 echo 'Backend Portal Server is Deployed and Ready to use'
             }
