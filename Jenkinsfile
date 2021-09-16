@@ -24,7 +24,7 @@ pipeline {
                     sh 'pwd'
 
                     docker.image('ubuntu-development:1.0').withRun("--name ubuntu_dev_bash -p 6200:6200 -p 27017:27017 ubuntu-development:1.0 /bin/bash"){
-                    sh label:
+                        sh label:
                         'Running pwd',
                         script: '''
                         pwd
