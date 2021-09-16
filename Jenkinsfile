@@ -16,9 +16,10 @@ pipeline {
                     docker rm $(docker ps -a -q)
                     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
-                def ApiPortal = docker.build("ubuntu-development:1.0", "--build-arg git_personal_token=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 -f Dockerfile.development .")
+                def apiPortal == null
+                apiPortal = docker.build("ubuntu-development:1.0", "--build-arg git_personal_token=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 -f Dockerfile.development .")
                 echo 'Run Backend docker image in background'
-                ApiPortal.inside {
+                apiPortal.inside {
                     sh label:
                     'start mongodb',
                     script: '''
