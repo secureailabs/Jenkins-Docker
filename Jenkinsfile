@@ -22,7 +22,8 @@ pipeline {
                 script {
                     api_image = docker.build('ubuntu-development:1.0', '--build-arg git_personal_token=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 -f Dockerfile.development .')
                     sh 'pwd'
-                    docker.image('ubuntu-development').inside {
+
+                    docker.image('ubuntu-development:1.0').inside {
                         sh 'pwd'
                     }
                 // docker.image('ubuntu-development:1.0').inside {
