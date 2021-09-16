@@ -16,8 +16,9 @@ pipeline {
                     docker rm $(docker ps -a -q)
                     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
+                script {
+                    def image = docker.build("ubuntu-development:1.0", "--build-arg git_personal_token=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 -f Dockerfile.development .")
                 echo 'Backend Portal Server is Deployed and Ready to use'
-
             }
         }
     }
