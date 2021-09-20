@@ -6,9 +6,7 @@ pipeline {
     parallelsAlwaysFailFast()
     timestamps()
     }
-    environment {
-        api_image = docker.build('ubuntu-development:1.0', '--build-arg git_personal_token=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 -f Dockerfile.development .')
-    }
+
     stages {
         stage('Build Binaries & Deploy API Portal') {
             steps {
