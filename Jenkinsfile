@@ -17,21 +17,31 @@ pipeline {
                     # docker rm $(docker ps -a -q)
                     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
-                script {
-                    docker.build('ubuntu-development:1.0', '--build-arg git_personal_token=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 -f Dockerfile.development .')
-                    sh 'pwd'
-                    sh 'docker run --name ubuntu_dev_bash -dit -p 6200:6200 -p 27017:27017 ubuntu-development:1.0 /bin/bash'
-                    sh  label:
-                    'Update Repo and start Mongod',
-                    script:'''
-                    echo "Update Repo and start Mongod"
-                    set -x
-                    docker exec -w /Development/ ubuntu_dev_bash pwd
-                    docker exec -w /Development/ ubuntu_dev_bash ls -l
-                    docker exec -w /Development/ ubuntu_dev_bash git pull
-                    docker exec -w /Development/Milestone3/ ubuntu_dev_bash sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
-                    docker exec -w /Development/Milestone3/ ubuntu_dev_bash ps -ef
-                    '''
+                catchError {
+                    script {
+                        docker.build('ubuntu-development:1.0', '--build-arg git_personal_token=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 -f Dockerfile.development .')
+                        sh 'pwd'
+                        sh 'docker run --name ubuntu_dev_bash -dit -p 6200:6200 -p 27017:27017 ubuntu-development:1.0 /bin/bash'
+                        sh  label:
+                        'Update Repo and start Mongod',
+                        script:'''
+                        echo "Update Repo and start Mongod"
+                        set -x
+                        docker exec -w /Development/ ubuntu_dev_bash pwd
+                        docker exec -w /Development/ ubuntu_dev_bash ls -l
+                        docker exec -w /Development/ ubuntu_dev_bash git pull
+                        docker exec -w /Development/Milestone3/ ubuntu_dev_bash sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
+                        docker exec -w /Development/Milestone3/ ubuntu_dev_bash ps -ef
+                        '''
+                    }
+                }
+                post {
+                    success {
+                        echo 'Git stage successful'
+                    }
+                    failure {
+                        echo 'Git stage failed'
+                }
                 }
             }
         }
@@ -115,19 +125,31 @@ pipeline {
                 }
             }
         }
-        stage ('Teardown') {
-            steps {
-                script {
-                    echo 'Teardown'
-                    sh label:
-                    'Teardown',
-                    script:'''
-                    set -x
-                    docker kill $(docker ps -q)
-                    docker rm $(docker ps -a -q)
-                    '''
-                }
-            }
+        # stage ('Teardown') {
+        #     steps {
+        #         script {
+        #             echo 'Teardown'
+        #             sh label:
+        #             'Teardown',
+        #             script:'''
+        #             set -x
+        #             docker kill $(docker ps -q)
+        #             docker rm $(docker ps -a -q)
+        #             '''
+        #         }
+        #     }
+        # }
+    }
+    post {
+        always {
+            echo 'Teardown'
+            sh label:
+            'Teardown',
+            script:'''
+            set -x
+            docker kill $(docker ps -q)
+            docker rm $(docker ps -a -q)
+            '''
         }
     }
 }
