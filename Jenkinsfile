@@ -54,15 +54,13 @@ pipeline {
             steps {
                 script {
                     echo 'Deploy DatabaseGateway and RestApiPortal'
+                    sh '''
                     docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseGateway  > database.log &"
                     sleep 1
                     docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./RestApiPortal > portal.log &"
                     sleep 1
                     docker exec -w /Development/Milestone3/ ubuntu_dev_bash ps -ef
-                    # docker stop ubuntu_dev_bash
-                    # docker rm ubuntu_dev_bash
-                    # docker kill $(docker ps -q)
-                    # docker rm $(docker ps -a -q)
+                    '''
                 }
                 script {
                     try {
