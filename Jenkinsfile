@@ -8,7 +8,7 @@ pipeline {
     }
 
     stages {
-        stage('Build Binaries & Deploy API Portal') {
+        stage('Git') {
             steps {
                 sh '''
                     pwd
@@ -33,7 +33,10 @@ pipeline {
                     docker exec -w /Development/Milestone3/ ubuntu_dev_bash ps -ef
                     '''
                 }
-
+            }
+        }
+        stage('Build Backend') {
+            steps {
                 script {
                     echo 'Build Binaries'
                     sh label:
@@ -41,7 +44,16 @@ pipeline {
                     script:'''
                     set -x
                     docker exec -w /Development/Milestone3/ ubuntu_dev_bash sh CreateDailyBuild.sh
+
                     docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "ls -l"
+                    '''
+                }
+            }
+        }
+        stage ('Deploy Backend'){
+            steps {
+                script {
+                    echo 'Deploy DatabaseGateway and RestApiPortal'
                     docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseGateway  > database.log &"
                     sleep 1
                     docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "sudo ./RestApiPortal > portal.log &"
@@ -51,7 +63,6 @@ pipeline {
                     # docker rm ubuntu_dev_bash
                     # docker kill $(docker ps -q)
                     # docker rm $(docker ps -a -q)
-                    '''
                 }
                 script {
                     try {
@@ -68,7 +79,6 @@ pipeline {
                     }
                 }
                 echo 'Backend Portal Server is Deployed and Ready to use'
-
             }
         }
         stage('Run SailApiTAP') {
