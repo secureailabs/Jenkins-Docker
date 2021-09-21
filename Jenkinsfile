@@ -13,8 +13,8 @@ pipeline {
                 sh '''
                     pwd
                     ls -l
-                    docker kill $(docker ps -q)
-                    docker rm $(docker ps -a -q)
+                    # docker kill $(docker ps -q)
+                    # docker rm $(docker ps -a -q)
                     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
                 script {
@@ -106,6 +106,16 @@ pipeline {
                     junit '*.xml'
                     archiveArtifacts artifacts: '*.log'
                 }
+            }
+        }
+        stage ('Teardown') {
+            steps {
+                echo 'Teardown environment'
+                sh '''
+                    docker kill $(docker ps -q)
+                    docker rm $(docker ps -a -q)
+                    '''
+
             }
         }
     }
