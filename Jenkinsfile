@@ -110,12 +110,16 @@ pipeline {
         }
         stage ('Teardown') {
             steps {
-                echo 'Teardown environment'
-                sh '''
+                script {
+                    echo 'Teardown'
+                    sh label:
+                    'Teardown',
+                    script:'''
+                    set -x
                     docker kill $(docker ps -q)
                     docker rm $(docker ps -a -q)
                     '''
-
+                }
             }
         }
     }
