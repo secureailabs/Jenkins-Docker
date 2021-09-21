@@ -125,20 +125,6 @@ pipeline {
                 }
             }
         }
-        # stage ('Teardown') {
-        #     steps {
-        #         script {
-        #             echo 'Teardown'
-        #             sh label:
-        #             'Teardown',
-        #             script:'''
-        #             set -x
-        #             docker kill $(docker ps -q)
-        #             docker rm $(docker ps -a -q)
-        #             '''
-        #         }
-        #     }
-        # }
     }
     post {
         always {
