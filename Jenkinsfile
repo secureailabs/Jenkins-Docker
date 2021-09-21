@@ -43,7 +43,7 @@ pipeline {
                     'Build Binaries',
                     script:'''
                     set -x
-                    docker exec -w /Development/Milestone3/ ubuntu_dev_bash sh CreateDailyBuild.sh
+                    docker exec -w /Development/Milestone3/ ubuntu_dev_bash ./CreateDailyBuild.sh
 
                     docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "ls -l"
                     '''
