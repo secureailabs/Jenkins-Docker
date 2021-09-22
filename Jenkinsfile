@@ -41,7 +41,7 @@ pipeline {
                     }
                     failure {
                         echo 'Git stage failed'
-                }
+                    }
                 }
             }
         }
