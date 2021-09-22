@@ -34,6 +34,12 @@ pipeline {
                     '''
                 }
             }
+            post {
+                failure {
+                    echo "Failed during Git stage"
+                }
+            }
+
         }
         stage('Build Backend') {
             steps {
@@ -46,6 +52,11 @@ pipeline {
                     docker exec -w /Development/Milestone3/ ubuntu_dev_bash ./CreateDailyBuild.sh
                     docker exec -w /Development/Milestone3/Binary ubuntu_dev_bash sh -c "ls -l"
                     '''
+                }
+            }
+            post {
+                failure {
+                    echo "Failed during Build Backend stage"
                 }
             }
         }
@@ -76,6 +87,11 @@ pipeline {
                     }
                 }
                 echo 'Backend Portal Server is Deployed and Ready to use'
+            }
+            post {
+                failure {
+                    echo "Failed during Deploy Backend stage"
+                }
             }
         }
         stage('Run SailApiTAP') {
@@ -112,6 +128,9 @@ pipeline {
                     echo 'End of stage test in Run SAILTAP!'
                     junit '*.xml'
                     archiveArtifacts artifacts: '*.log'
+                }
+                failure {
+                    echo "Failed during Run SailApiTAP stage"
                 }
             }
         }
