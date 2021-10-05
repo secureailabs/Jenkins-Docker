@@ -1,6 +1,6 @@
 /* groovylint-disable NestedBlockDepth */
 pipeline {
-    agent any
+    agent {label 'Nightly' }
     options {
     buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
     parallelsAlwaysFailFast()
