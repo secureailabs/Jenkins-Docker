@@ -1,0 +1,12 @@
+version: "3.5"
+
+services:
+  web:
+    container_name: test_sail_web
+    image: sail-web:local
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - ./.client.env:/app/client/.env
+      - ./.server.env:/app/server/.env
