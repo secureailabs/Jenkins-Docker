@@ -2,13 +2,15 @@ FROM node:14.16.0 as build
 
 WORKDIR /app
 ARG git_personal_token
-RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf " https://github.com/"
-RUN git clone https://$git_personal_token@github.com/secureailabs/Web-Development
+RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf " https://github.com/" \
+    && git clone https://$git_personal_token@github.com/secureailabs/Web-Development
 RUN mv -v Web-Development/* .
 RUN rm -rf Web-Development
-RUN yarn --cwd client install
-RUN yarn --cwd client build
-RUN yarn --cwd server install
+RUN yarn --cwd client install \
+    && yarn cache clean \
+    && yarn --cwd client build
+RUN yarn --cwd server install \
+    && yarn cache clean
 RUN chmod +x /app/env.sh
 
 EXPOSE 3000
