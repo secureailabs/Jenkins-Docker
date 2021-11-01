@@ -21,7 +21,7 @@ docker run -it -p 127.0.0.1:8080:8080  -v {path}:/host orchestrator
 Run the jupyter notebook command below once you've started your container. You should be able to access your notebook on your host device on your browser at this address: https://127.0.0.1:8080. You'll need the token from your terminal output to access the page.
 
 ```
-jupyter notebook --notebook-dir=/SAIL --ip=0.0.0.0 --port=8080 --allow-root
+jupyter notebook --notebook-dir=/host --ip=0.0.0.0 --port=8080 --allow-root
 ```
 
 
