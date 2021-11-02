@@ -1,10 +1,10 @@
-FROM ubuntu
+FROM ubuntu:latest
 
 ARG git_personal_token
 
-RUN apt-get -y update
-RUN apt-get -y upgrade
-RUN apt-get -y dist-upgrade
+# RUN apt-get -y update
+# RUN apt-get -y upgrade
+# RUN apt-get -y dist-upgrade
 RUN apt-get install -y libssl-dev
 RUN apt-get install -y libcurl4-openssl-dev
 RUN apt-get install -y uuid-dev
