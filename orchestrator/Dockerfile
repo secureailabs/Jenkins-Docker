@@ -5,6 +5,8 @@ ARG git_personal_token
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
+EXPOSE 8080
+
 RUN apt-get -y update
 RUN apt-get -y upgrade
 RUN apt-get install -y libssl-dev
@@ -28,7 +30,6 @@ RUN apt-get install -y jupyter
 
 WORKDIR /
 
-RUN ls
 #Bring down the SAILPyAPI lib
 RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf " https://github.com/" \
     && git clone https://$git_personal_token@github.com/secureailabs/Development
@@ -56,4 +57,4 @@ RUN mkdir /host
 WORKDIR /demo
 
 CMD /bin/bash
-# CMD  jupyter notebook --notebook-dir=/demo --ip=0.0.0.0 --port=8080 --allow-root
+# CMD  jupyter notebook --ip=0.0.0.0 --port=8080 --allow-root
