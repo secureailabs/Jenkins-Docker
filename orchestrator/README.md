@@ -1,5 +1,9 @@
 # 1. Preparing the Notebook
 
+## 1.0 Preparing the Dockerfile
+
+The Dockerfile makes a change to the current Orchestrator code where a Back-end API portal ip is hard coded. The dockerfile changes the Back-end API portal ip to be: ```40.76.22.246```. Should you wish to point the Orchestrator at another location please edit in Dockerfile ```RUN sed -i 's/20.185.6.111/40.76.22.246/g' Sources/frontend.cpp``` replacing ```40.76.22.246``` with the ip you wish to use.
+
 ## 1.1 Building the Image
 
 First you need to build the docker image from the dockerfile in this directory. You'll need an access token for the secureailabs github. Build your docker image by running:
