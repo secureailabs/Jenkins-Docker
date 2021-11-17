@@ -18,7 +18,7 @@ pipeline {
                     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
                 script {
-                    docker.build('ubuntu-development:1.0', '--build-arg git_personal_token=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 -f Dockerfile.development .')
+                    docker.build('ubuntu-development:1.0', '--build-arg git_personal_token=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 -f Nightly_Tests/Dockerfile.development .')
                     sh 'pwd'
                     sh 'docker run --name ubuntu_dev_bash -dit -p 6200:6200 -p 27017:27017 ubuntu-development:1.0 /bin/bash'
                     sh  label:
@@ -100,7 +100,7 @@ pipeline {
                 sh 'ls -l'
                 script {
                     echo 'Update Test Repo'
-                    docker.build('ubuntu-sailtap:1.0', '--build-arg git_personal_token=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 -f Dockerfile.test .')
+                    docker.build('ubuntu-sailtap:1.0', '--build-arg git_personal_token=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 -f Nightly_Tests/Dockerfile.test .')
                     sh 'docker run --name ubuntu_tst_bash -dit ubuntu-sailtap:1.0 /bin/bash'
                     sh  label:
                     'Update Test Repo',
