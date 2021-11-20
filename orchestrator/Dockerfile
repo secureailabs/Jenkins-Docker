@@ -30,9 +30,9 @@ RUN apt-get install -y jupyter
 
 WORKDIR /
 
-#Bring down the SAILPyAPI lib
+#Bring down the Dev lib
 RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf " https://github.com/" \
-    && git clone https://$git_personal_token@github.com/secureailabs/Development \
+    && git clone https://$git_personal_token@github.com/secureailabs/Development 
 
 # make the SAILPyAPI 
 WORKDIR /Development/Milestone3/VirtualMachine/Orchestrator/
