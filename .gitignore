@@ -3,3 +3,6 @@
 .settings/
 target/
 .vscode/settings.json
+
+ssl.crt
+ssl.key
