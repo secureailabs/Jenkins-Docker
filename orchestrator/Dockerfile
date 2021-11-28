@@ -36,6 +36,8 @@ RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf
 
 # make the SAILPyAPI 
 WORKDIR /Engineering/Milestone3/VirtualMachine/Orchestrator/
+RUN git checkout new_orchestrator
+
 # RUN git checkout jingwei_3
 RUN make all -j
 
