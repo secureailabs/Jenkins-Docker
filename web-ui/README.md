@@ -30,7 +30,8 @@ Find absolute path of your web-ui directory; `pwd` on linux to replace `<abs_pat
 1. Docker Build: \
 `docker build --build-arg git_personal_token=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 -f Dockerfile.web -t sail-web:local .`
 2. Docker compose: \
-`docker-compose -f docker-compose.web.yml up`
+`docker-compose -f docker-compose.web.yml up` \
+`docker-compose -f docker-compose.web.yml up -d` [Runs in Background]
 
 ### STOP WEB CONTAINER
 1. Docker compose down:
