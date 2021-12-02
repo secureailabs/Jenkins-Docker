@@ -20,7 +20,7 @@ build-essential
 # GIT
 ARG git_personal_token
 RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf " https://github.com/"
-RUN git clone https://$git_personal_token@github.com/secureailabs/Development.git /Development
+RUN git clone https://$git_personal_token@github.com/secureailabs/Engineering.git /Development
 RUN sh /Development/install.sh
 
 EXPOSE 27017 6200
