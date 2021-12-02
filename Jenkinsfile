@@ -118,7 +118,7 @@ pipeline {
                     docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/dataset_mgmt_api_test.py --ip 10.0.0.5 -m active -sv --junitxml=dataset_mgmt.xml
                     docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/digital_contract_mgmt_test.py --ip 10.0.0.5 -m active -sv --junitxml=digital_contract_mgmt.xml
                     docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/azure_template_mgmt_test.py --ip 10.0.0.5 -m active -sv --junitxml=azure_template_mgmt.xml
-                    docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/datasetfamily_mgmt_api_test.py --ip 10.0.0.5 -m active -sv --junitxml=dataset_family.xml
+                    docker exec -w /Test/ ubuntu_tst_bash pytest /Test/StanleyLin/test_api/datasetfamily_mgmt_api_test.py --ip 10.0.0.5 -m "active or active_m3" -sv --junitxml=dataset_family.xml
                     docker cp ubuntu_tst_bash:/Test/sail-result.xml .
                     docker cp ubuntu_tst_bash:/Test/account-mgmt-result.xml .
                     docker cp ubuntu_tst_bash:/Test/dataset_mgmt.xml .
