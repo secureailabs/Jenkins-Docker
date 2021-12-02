@@ -36,7 +36,7 @@ RUN git config --global url."https://$git_personal_token:@github.com/".insteadOf
 
 # Includes find/repl command to hot fix hardcodred IP for now
 WORKDIR /Development/Milestone3/VirtualMachine/Orchestrator/
-RUN sed -i 's/20.185.6.111/40.76.22.246/g' Sources/frontend.cpp
+RUN sed -i 's/20.185.6.111/52.150.26.47/g' Sources/frontend.cpp
 RUN make all -j
 
 RUN pip3 install /Development/Milestone3/VirtualMachine/Orchestrator/sail
