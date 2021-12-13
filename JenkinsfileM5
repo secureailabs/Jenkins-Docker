@@ -26,11 +26,11 @@ pipeline {
                     script:'''
                     echo "Update Repo and start Mongod"
                     set -x
-                    docker exec -w /Development/ ubuntu_dev_bash pwd
-                    docker exec -w /Development/ ubuntu_dev_bash ls -l
-                    docker exec -w /Development/ ubuntu_dev_bash git pull
-                    docker exec -w /Development/Milestone5/ ubuntu_dev_bash sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
-                    docker exec -w /Development/Milestone5/ ubuntu_dev_bash ps -ef
+                    docker exec -w /Engineering/ ubuntu_dev_bash pwd
+                    docker exec -w /Engineering/ ubuntu_dev_bash ls -l
+                    docker exec -w /Engineering/ ubuntu_dev_bash git pull
+                    docker exec -w /Engineering/Milestone5/ ubuntu_dev_bash sudo mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost --fork --logpath /var/log/mongod.log
+                    docker exec -w /Engineering/Milestone5/ ubuntu_dev_bash ps -ef
                     '''
                 }
             }
@@ -49,8 +49,8 @@ pipeline {
                     'Build Binaries',
                     script:'''
                     set -x
-                    docker exec -w /Development/Milestone5/ ubuntu_dev_bash ./CreateDailyBuild.sh
-                    docker exec -w /Development/Milestone5/Binary ubuntu_dev_bash sh -c "ls -l"
+                    docker exec -w /Engineering/Milestone5/ ubuntu_dev_bash ./CreateDailyBuild.sh
+                    docker exec -w /Engineering/Milestone5/Binary ubuntu_dev_bash sh -c "ls -l"
                     '''
                 }
             }
@@ -65,24 +65,24 @@ pipeline {
                 script {
                     echo 'Deploy DatabaseGateway and RestApiPortal'
                     sh '''
-                    docker exec -w /Development/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseGateway  > database.log &"
+                    docker exec -w /Engineering/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseGateway  > database.log &"
                     sleep 1
-                    docker exec -w /Development/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./RestApiPortal > portal.log &"
+                    docker exec -w /Engineering/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./RestApiPortal > portal.log &"
                     sleep 1
-                    docker exec -w /Development/Milestone5/ ubuntu_dev_bash ps -ef
+                    docker exec -w /Engineering/Milestone5/ ubuntu_dev_bash ps -ef
                     '''
                 }
                 script {
                     try {
                         echo 'Load Database'
-                        sh 'docker exec -w /Development/Milestone5/Binary ubuntu_dev_bash sh -c "ls -l"'
-                        sh 'docker exec -w /Development/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200"'
+                        sh 'docker exec -w /Engineering/Milestone5/Binary ubuntu_dev_bash sh -c "ls -l"'
+                        sh 'docker exec -w /Engineering/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200"'
                     }catch (exception) {
                         echo getStackTrace(exception)
                         echo 'Error detected, retrying...'
                         sh '''
-                            docker exec -w /Development/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200 -d"
-                            docker exec -w /Development/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200"
+                            docker exec -w /Engineering/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200 -d"
+                            docker exec -w /Engineering/Milestone5/Binary ubuntu_dev_bash sh -c "sudo ./DatabaseTools --PortalIp=127.0.0.1 --Port=6200"
                             ''' 
                     }
                 }
@@ -125,8 +125,8 @@ pipeline {
                     docker cp ubuntu_tst_bash:/Test/digital_contract_mgmt.xml .
                     docker cp ubuntu_tst_bash:/Test/azure_template_mgmt.xml .
                     docker cp ubuntu_tst_bash:/Test/dataset_family.xml .
-                    docker cp ubuntu_dev_bash:/Development/Milestone5/Binary/portal.log .
-                    docker cp ubuntu_dev_bash:/Development/Milestone5/Binary/database.log .
+                    docker cp ubuntu_dev_bash:/Engineering/Milestone5/Binary/portal.log .
+                    docker cp ubuntu_dev_bash:/Engineering/Milestone5/Binary/database.log .
                     '''
                 }
             }
