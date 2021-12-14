@@ -1,7 +1,7 @@
 [![Linter](https://github.com/secureailabs/Jenkins-Docker/actions/workflows/Linter.yml/badge.svg?branch=main)](https://github.com/secureailabs/Jenkins-Docker/actions/workflows/Linter.yml)
 
 # Prerequisite
-> **Note:** You cannot use `localhost` or `127.0.0.1` instead must use the actual public ip \
+> **Note:** You cannot use `localhost` or `127.0.0.1` instead must use the actual public ip  for SAIL_API in.server.env\
 > If you are hosting backend and frontend on same host `backend_public_ip` and `frontend_public_ip` should match
 
 - [Install docker engine](https://docs.docker.com/engine/install/) and ensure permissions
