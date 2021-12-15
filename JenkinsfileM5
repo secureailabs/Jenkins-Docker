@@ -105,7 +105,7 @@ pipeline {
                 script {
                     echo 'Update Test Repo'
                     docker.build('ubuntu-sailtap:1.0', '--build-arg git_personal_token=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 -f Nightly_Tests/Dockerfile.test .')
-                    sh 'docker run --name ubuntu_tst_bash -dit ubuntu-sailtap:1.0 /bin/bash'
+                    sh 'docker run --name ubuntu_tst_bash -dit -v /datadrive/jenkins_workspace/workspace/tmp_engineering:/tmp_engineering ubuntu-sailtap:1.0 /bin/bash'
                     sh  label:
                     'Update Test Repo',
                     script:'''
