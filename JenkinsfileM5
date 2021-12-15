@@ -132,8 +132,8 @@ pipeline {
                     docker cp ubuntu_tst_bash:/Test/azure_template_mgmt.xml .
                     docker cp ubuntu_tst_bash:/Test/dataset_family.xml .
                     docker cp ubuntu_tst_bash:/Test/orchestrator.xml .
-                    docker cp ubuntu_dev_bash:/Development/Milestone5/Binary/portal.log .
-                    docker cp ubuntu_dev_bash:/Development/Milestone5/Binary/database.log .
+                    docker cp ubuntu_dev_bash:/Engineering/Milestone5/Binary/portal.log .
+                    docker cp ubuntu_dev_bash:/Engineering/Milestone5/Binary/database.log .
                     '''
                 }
             }
