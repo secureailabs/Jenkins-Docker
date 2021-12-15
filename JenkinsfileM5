@@ -112,6 +112,7 @@ pipeline {
                     docker exec -w /Test/ ubuntu_tst_bash pwd
                     docker exec -w /Test/ ubuntu_tst_bash ls -l
                     docker exec -w /Test/ ubuntu_tst_bash git pull
+                    docker exec -w /tmp_engineering/VirtualMachine/Orchestrator/sail/ ubuntu_tst_bash ls -l
                     '''
                     echo 'Running Tests'
                     sh  label:
@@ -130,7 +131,7 @@ pipeline {
                     docker cp ubuntu_tst_bash:/Test/digital_contract_mgmt.xml .
                     docker cp ubuntu_tst_bash:/Test/azure_template_mgmt.xml .
                     docker cp ubuntu_tst_bash:/Test/dataset_family.xml .
-                    docker co ubuntu_tst_bash:/Test/orchestrator.xml .
+                    docker cp ubuntu_tst_bash:/Test/orchestrator.xml .
                     docker cp ubuntu_dev_bash:/Development/Milestone5/Binary/portal.log .
                     docker cp ubuntu_dev_bash:/Development/Milestone5/Binary/database.log .
                     '''
