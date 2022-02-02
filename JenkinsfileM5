@@ -2,7 +2,7 @@
 pipeline {
     agent {label 'Nightly' }
     triggers {
-        cron('H 18 * * 1-5')
+        cron('H 0 * * 1-5')
     }
     options {
     buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
