@@ -92,7 +92,7 @@ pipeline {
                 echo 'Backend Portal Server is Deployed and Ready to use'
                 script {
                     echo ' Copy Orchestrator Folder to Local host'
-                    sh 'docker cp ubuntu_dev_bash:/Engineering/Milestone5/VirtualMachine/ /datadrive/jenkins_workspace/workspace/tmp_engineering/'
+                    sh 'docker cp ubuntu_dev_bash:/Engineering/Milestone5/EndPointTools/Orchestrator/ /datadrive/jenkins_workspace/workspace/tmp_engineering/'
                 }
             }
             post {
@@ -115,7 +115,7 @@ pipeline {
                     docker exec -w /Test/ ubuntu_tst_bash pwd
                     docker exec -w /Test/ ubuntu_tst_bash ls -l
                     docker exec -w /Test/ ubuntu_tst_bash git pull
-                    docker exec -w /tmp_engineering/VirtualMachine/Orchestrator/sail/ ubuntu_tst_bash ls -l
+                    docker exec -w /tmp_engineering/Orchestrator/sail/ ubuntu_tst_bash ls -l
                     '''
                     echo 'Running Tests'
                     sh  label:
@@ -152,6 +152,8 @@ pipeline {
             set -x
             docker kill $(docker ps -q)
             docker rm $(docker ps -a -q)
+            cd /datadrive/jenkins_workspace/workspace/tmp_engineering/ && tar -cvf Nightly_Orchestrator.tar Orchestrator/
+            test -d "/datadrive/jenkins_workspace/workspace/tmp_engineering/Orchestrator/" && rm -rf "/datadrive/jenkins_workspace/workspace/tmp_engineering/Orchestrator/"
             '''
             cleanWs()
         }
