@@ -1,6 +1,9 @@
 /* groovylint-disable NestedBlockDepth */
 pipeline {
     agent {label 'Nightly' }
+    environment {
+        JENKINS_PAT = credentials('PAT_Jenkins')
+    }
     triggers {
         cron('H 0 * * 1-5')
     }
@@ -21,7 +24,7 @@ pipeline {
                     '''
                 echo 'Starting to build docker image: Backend Api Portal Server'
                 script {
-                    docker.build('ubuntu-development:1.0', '--build-arg git_personal_token=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 -f Nightly_Tests/Dockerfile.development .')
+                    docker.build("ubuntu-development:1.0", "--build-arg git_personal_token=$JENKINS_PAT -f Nightly_Tests/Dockerfile.development .")
                     sh 'pwd'
                     sh 'docker run --name ubuntu_dev_bash -dit -p 6200:6200 -p 27017:27017 ubuntu-development:1.0 /bin/bash'
                     sh  label:
@@ -92,7 +95,7 @@ pipeline {
                 echo 'Backend Portal Server is Deployed and Ready to use'
                 script {
                     echo ' Copy Orchestrator Folder to Local host'
-                    sh 'docker cp ubuntu_dev_bash:/Engineering/Milestone5/VirtualMachine/ /datadrive/jenkins_workspace/workspace/tmp_engineering/'
+                    sh 'docker cp ubuntu_dev_bash:/Engineering/Milestone5/EndPointTools/Orchestrator/ /datadrive/jenkins_workspace/workspace/tmp_engineering/'
                 }
             }
             post {
@@ -115,7 +118,7 @@ pipeline {
                     docker exec -w /Test/ ubuntu_tst_bash pwd
                     docker exec -w /Test/ ubuntu_tst_bash ls -l
                     docker exec -w /Test/ ubuntu_tst_bash git pull
-                    docker exec -w /tmp_engineering/VirtualMachine/Orchestrator/sail/ ubuntu_tst_bash ls -l
+                    docker exec -w /tmp_engineering/Orchestrator/sail/ ubuntu_tst_bash ls -l
                     '''
                     echo 'Running Tests'
                     sh  label:
@@ -152,6 +155,8 @@ pipeline {
             set -x
             docker kill $(docker ps -q)
             docker rm $(docker ps -a -q)
+            cd /datadrive/jenkins_workspace/workspace/tmp_engineering/ && tar -cvf Nightly_Orchestrator.tar Orchestrator/
+            test -d "/datadrive/jenkins_workspace/workspace/tmp_engineering/Orchestrator/" && rm -rf "/datadrive/jenkins_workspace/workspace/tmp_engineering/Orchestrator/"
             '''
             cleanWs()
         }
